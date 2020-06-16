@@ -8,50 +8,42 @@ page = requests.get(url)
 
 soup = BeautifulSoup(page.content)
 
-tables = list(soup.find_all('table'))
-
-header = tables[2].find_all('th')
-
-tables[2].find_all('tr')[2].contents[1]
-name_list = []
-
-what_comes_next = []
-
-
-rows = tables[2].find_all('tr')
-
-for row in rows:
-    cells = row.find_all('td')
-    
-    
-    if len(cells) > 1:
-        rank = cells[0]
-        name_list.append(rank.text.strip())
-
-        the_next = cells[1]
-        what_comes_next.append(the_next)
-        
-
-what_comes_next
-name_list
-
-soup.find_all("table", limit=3)
-
 for t in soup.find_all("table"):
     if "Elimination chart" in t.th.text:
         elim_chart = t
 
-for d in elim_chart.find_all('td'):
-    if d.has_attr('style'):
-        print(d.get('style'))
+contestant_name_list = []
 
 for d in elim_chart.find_all('td'):
-    if d.has_attr('style'):
-        print(d.text)
+    if d.has_attr('align'):
+        contestant_name_list.append(d.text)
 
-elim_chart.td
+cont_and_colors = {}
+for name in contestant_name_list:
+    name_tag = elim_chart.find('td', text = name)
+    tag = name_tag.find_next()
+    color_list = []
+    while tag.has_attr('align') == False:
+        colspan = 1
+        if tag.has_attr('style'):
+            color = tag.get('style')
+        if tag.has_attr('colspan'):
+            colspan = int(tag.get('colspan'))
+        color_list.extend([color] * colspan)
+        tag = tag.find_next()
+    cont_and_colors[name] = color_list[:7]
 
-'Runner-up' in elim_chart.find('td', text = 'Ruth').find_next().find_next().find_next().find_next().text
+cont_and_colors
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -62,3 +54,12 @@ elim_chart.td
 # cornflower blue - judge fav
 # orangered - eliminated
 # plum - least fav but not eliminated
+
+
+# for d in elim_chart.find_all('td'):
+#     if d.has_attr('style'):
+#         print(d.get('style'))
+
+# for d in elim_chart.find_all('td'):
+#     if d.has_attr('style'):
+#         print(d.text)
