@@ -19,6 +19,7 @@ for d in elim_chart.find_all('td'):
         contestant_name_list.append(d.text)
 
 cont_and_colors = {}
+len_of_chart = int(elim_chart.th.get('colspan'))
 for name in contestant_name_list:
     name_tag = elim_chart.find('td', text = name)
     tag = name_tag.find_next()
@@ -31,10 +32,9 @@ for name in contestant_name_list:
             colspan = int(tag.get('colspan'))
         color_list.extend([color] * colspan)
         tag = tag.find_next()
-    cont_and_colors[name] = color_list[:7]
+    cont_and_colors[name] = color_list[:len_of_chart-1]
 
 cont_and_colors
-
 
 
 
