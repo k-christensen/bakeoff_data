@@ -28,6 +28,11 @@ color_meaning_dict = {'lightblue':'next_round',
 'lemonchiffon': 'star_baker',
 'silver': 'not_in_comp'}
 
+max_ep = 0
+for item in elim_chart.find_all('th'):
+    if item.text.rstrip().isnumeric() and int(item.text.rstrip())> max_ep:
+        max_ep = int(item.text.rstrip())
+
 cont_and_colors = {}
 len_of_chart = int(elim_chart.th.get('colspan'))
 
@@ -42,17 +47,16 @@ for name in contestant_name_list:
         if tag.has_attr('colspan'):
             colspan = int(tag.get('colspan'))
         color_list.extend([x for x in 
-        re.split("(?:background:)(\w*)(?:;)", color) 
+        re.split("(?:background:\s?)(\w*)(?:;)", color) 
         if x] * colspan)
         tag = tag.find_next()
-    color_list = color_list[:len_of_chart-1]
+    color_list = color_list[:max_ep]
     meaning_list = [color_meaning_dict[color.lower()] for color in color_list]
-    cont_and_colors[name] = meaning_list
+    key_list = ["{}_episode_{}".format(name, num) for num in list(range(1,max_ep+1))]
+    cont_and_colors.update(dict(zip(key_list, meaning_list)))
 
 cont_and_colors
-
-
-
+        
 # notes
 # light blue - through to next round
 # cornflower blue - judge fav
