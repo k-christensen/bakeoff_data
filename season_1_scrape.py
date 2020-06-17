@@ -19,8 +19,18 @@ for d in elim_chart.find_all('td'):
     if d.has_attr('align'):
         contestant_name_list.append(d.text)
 
+color_meaning_dict = {'lightblue':'next_round', 
+'cornflowerblue':'judge_fav',
+'plum': 'least_fav', 
+'orangered': 'eliminated', 
+'yellow': 'winner',
+'limegreen': 'runner-up',
+'lemonchiffon': 'star_baker',
+'silver': 'not_in_comp'}
+
 cont_and_colors = {}
 len_of_chart = int(elim_chart.th.get('colspan'))
+
 for name in contestant_name_list:
     name_tag = elim_chart.find('td', text = name)
     tag = name_tag.find_next()
@@ -31,25 +41,15 @@ for name in contestant_name_list:
             color = tag.get('style')
         if tag.has_attr('colspan'):
             colspan = int(tag.get('colspan'))
-        color_list.extend([x for x in re.split("(?:background:)(\w*)(?:;)", color) if x] * colspan)
+        color_list.extend([x for x in 
+        re.split("(?:background:)(\w*)(?:;)", color) 
+        if x] * colspan)
         tag = tag.find_next()
-    color_list = list(filter(None, color_list))
-    cont_and_colors[name] = color_list[:len_of_chart-1]
+    color_list = color_list[:len_of_chart-1]
+    meaning_list = [color_meaning_dict[color.lower()] for color in color_list]
+    cont_and_colors[name] = meaning_list
 
 cont_and_colors
-
-test_list = list(cont_and_colors.values())[0]
-
-[re.split("(?:background:)(\w*)(?:;)", item)[1] for item in test_list]
-
-
-
-
-
-
-
-
-
 
 
 
