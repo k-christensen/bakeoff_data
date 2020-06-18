@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import re
 
-url = 'https://en.wikipedia.org/wiki/The_Great_British_Bake_Off_(series_9)'
+url = 'https://en.wikipedia.org/wiki/The_Great_British_Bake_Off_(series_1)'
 
 page = requests.get(url)
 
