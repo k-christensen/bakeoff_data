@@ -24,7 +24,30 @@ for d in elim_chart.find_all('td'):
 contestant_name_list = [name.rstrip() for name in contestant_name_list]
 
 
+contestant_name_age_town = {item.td.text:
+[int(item.td.find_next_sibling().text), 
+item.td.find_next_sibling().find_next_sibling().find_next_sibling().a.get('href')] 
+for item in 
+soup.find("table", class_="wikitable").find_all('tr')
+if item.td is not None}
 
+[item[-1].split('/')[-1] for item in contestant_name_age_town.values()]
+
+area_url = 'https://en.wikipedia.org/wiki/Milton_Keynes'  
+area_page = requests.get(area_url)
+
+area_soup = BeautifulSoup(area_page.content)
+
+stats_dict = {}
+for item in area_soup.find_all('th'):
+    if 'Density' in item.text:
+        stats_dict['density'] = item.find_next_sibling().text.split()[0]
+    if 'Population' in item.text:
+        stats_dict['pop'] = item.find_next_sibling().text.split()[0]
+    if 'Area' in item.text:
+        stats_dict['area'] = item.find_next_sibling().text.split()[0]
+
+stats_dict
 
 
 
