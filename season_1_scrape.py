@@ -31,13 +31,18 @@ area_soup = BeautifulSoup(area_page.content)
 
 for item in area_soup.find_all('th'):
     if "Population" in item.text:
-        print(item.find_all('th'))
-        # if item.find_next_sibling() is None:
-        #     print(item.find_all_next()[1].find_all('th'))
-        # else:
-        #     print(item.find_next_sibling())
-        
+        if item.find_next_sibling() is None:
+            pop_item = re.split('(\d*,\d*)',item.parent.find_next_sibling().text)[1]
+        elif item.find_next_sibling().text.startswith('%'):
+            pass
+        else:
+            pop_item = item.find_next_sibling().text
 
+pop_item
+        
+for item in area_soup.find_all('th'):
+    if "Population" in item.text:
+        print(item.find_all_next()[1])
 
 contestant_name_age_town = {item.td.text:
 [int(item.td.find_next_sibling().text), 
@@ -55,38 +60,53 @@ def area_stats(url_snippet):
         area_soup = BeautifulSoup(area_page.content)
 
         for item in area_soup.find_all('th'):
-            try:
-                if 'Density' in item.text:
-                    if item.find_next_sibling().text:
-                        density_str = item.find_next_sibling().text
-                        if len([density_str.split()])>1:
-                            stats_dict['density'] =[density_str.split()][0]
-                        else:
-                            stats_dict['density'] = density_str
-                if 'Population' in item.text:
-                    if item.find_next_sibling().text:
-                        pop_str = item.find_next_sibling().text
-                        if len([pop_str.split()])>1:
-                            stats_dict['pop'] = [pop_str.split()][0]
-                        else:
-                            stats_dict['pop'] = pop_str
-                if 'Area' in item.text:
-                    if item.find_next_sibling().text:
-                        area_str = item.find_next_sibling().text
-                        if len([area_str.split()])>1:
-                            stats_dict['area'] = [area_str.split()][0]
-                        else:
-                            stats_dict['area'] = area_str
-            except AttributeError:
-                stats_dict = ["something_was_none"]
+            if 'Density' in item.text:
+                if item.find_next_sibling().text:
+                    density_str = item.find_next_sibling().text
+                    print(density_str.split()[0])
+                    stats_dict['density'] = density_str.split()[0]
+                    # if len(density_str.split())>1:
+                    #     stats_dict['density'] =density_str.split()[0]
+                    # else:
+                    # stats_dict['density'] = density_str
+            if 'Population' in item.text:
+                if item.find_next_sibling() is None:
+                    stats_dict['pop'] = re.split('(\d*,\d*)',item.parent.find_next_sibling().text)[1]
+                elif item.find_next_sibling().text.startswith('%'):
+                    pass
+                else:
+                    pop_str = item.find_next_sibling().text
+                    print(pop_str.split()[0])
+                    stats_dict['pop']= pop_str.split()[0]
+                    # if len([pop_str.split()])>1:
+                    #     stats_dict['pop'] = [pop_str.split()][0]
+                    # else:
+                    #     stats_dict['pop'] = pop_str
+            if 'Area' in item.text:
+                if item.find_next_sibling() is None:
+                    try:
+                        stats_dict['area'] = re.split('(\d*,\d*)',item.parent.find_next_sibling().text)[1]
+                    except: IndexError
+                elif item.find_next_sibling().text:
+                    area_str = item.find_next_sibling().text
+                    print(area_str.split()[0])
+                    # if len([area_str.split()])>1:
+                    #     stats_dict['area'] = [area_str.split()][0]
+                    # else:
+                    #     stats_dict['area'] = area_str
 
     return {url_snippet.split('/')[-1]:stats_dict}
 
-for l in contestant_name_age_town.values():
+
+copy_contestant_name_age_town = contestant_name_age_town.copy()
+for l in copy_contestant_name_age_town.values():
     area = l[-1]
     l.append(area_stats(area))
 
-contestant_name_age_town
+copy_contestant_name_age_town
+
+[list(val[-1].values() )for val in copy_contestant_name_age_town.values()]
+
 
 [item[-1].split('/')[-1] for item in contestant_name_age_town.values()]
 
