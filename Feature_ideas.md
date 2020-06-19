@@ -8,8 +8,9 @@
    - For this I may want to look up recipes and generate features based on recipe attributes (num of ingredients, num of steps, word count)
 
 ## Contestant Bio
- - Area of contestant hometown
- - Density (instead of population) of contestant hometown
+ - Population of contestant hometown
+ - Density of contestant hometown
+   - note: the reason I'm not doing area is that it seems to be more difficult to get that than the above two
  - Contestant age
 
 ## Episode numbers

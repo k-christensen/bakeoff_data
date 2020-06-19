@@ -31,7 +31,7 @@ soup.find("table", class_="wikitable").find_all('tr')
 if item.td is not None}
 
 def area_stats(url_snippet):
-    stats_dict = {}
+    stats_dict = {'density':None}
     if type(url_snippet) == str:
         area_url = 'https://en.wikipedia.org{}'.format(url_snippet)  
         area_page = requests.get(area_url)
@@ -42,7 +42,10 @@ def area_stats(url_snippet):
             if 'Density' in item.text:
                 if item.find_next_sibling().text:
                     density_str = item.find_next_sibling().text
-                    stats_dict['density'] = density_str.split()[0]
+                    for elem in item.find_next_sibling().text.split():
+                        if "/km" in elem:
+                            d = int([item for item in re.split("(\d*,?\d*)",elem) if len(item)>1][0].replace(',',''))
+                            stats_dict['density'] = d
             if 'Population' in item.text:
                 if item.find_next_sibling() is None:
                     stats_dict['pop'] = re.split('(\d*,\d*)',item.parent.find_next_sibling().text)[1]
@@ -51,35 +54,13 @@ def area_stats(url_snippet):
                 else:
                     pop_str = item.find_next_sibling().text
                     stats_dict['pop']= pop_str.split()[0]
-            if 'Area' in item.text:
-                if item.find_next_sibling() is None:
-                    try:
-                        stats_dict['area'] = re.split('(\d*,\d*)',item.parent.find_next_sibling().text)[1]
-                    except: IndexError
-                elif item.find_next_sibling().text:
-                    area_str = item.find_next_sibling().text
-
     return {url_snippet.split('/')[-1]:stats_dict}
 
-
-area_url = 'https://en.wikipedia.org{}'.format('/wiki/Bradford')  
-area_page = requests.get(area_url)
-area_soup = BeautifulSoup(area_page.content)
-for item in area_soup.find_all('th'):
-    if 'Density' in item.text:
-        print(item.find_next_sibling())
-
-copy_contestant_name_age_town = contestant_name_age_town.copy()
 for l in contestant_name_age_town.values():
     area = l[-1]
     l.append(area_stats(area))
 
-[list(l[-1].values()) for l in contestant_name_age_town.values()]
-
-
-
-
-pd.DataFrame.from_dict(copy_contestant_name_age_town)
+pd.DataFrame.from_dict(contestant_name_age_town, orient = 'index')
 
 [list(val[-1].values())for val in copy_contestant_name_age_town.values()]
 
