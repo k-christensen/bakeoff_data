@@ -23,6 +23,11 @@ for d in elim_chart.find_all('td'):
 
 contestant_name_list = [name.rstrip() for name in contestant_name_list]
 
+
+
+
+
+
 color_meaning_dict = {'lightblue':'next_round', 
 'cornflowerblue':'judge_fav',
 'plum': 'least_fav', 
@@ -61,10 +66,19 @@ for name in contestant_name_list:
         tag = tag.find_next_sibling()
     color_list = color_list[:max_ep]
     meaning_list = [color_meaning_dict[color.lower()] for color in color_list]
+    episode_num_list = [num for num in list(range(1,max_ep+1))]
+    episode_and_outcome = [list(item) for item in list(zip(episode_num_list,meaning_list))]
     key_list = ["{}_episode_{}".format(name.rstrip(), num) for num in list(range(1,max_ep+1))]
-    cont_and_colors.update(dict(zip(key_list, meaning_list)))
+    cont_and_colors.update(dict(zip(key_list, episode_and_outcome)))
 
-cont_and_colors
+for entry in list(cont_and_colors):
+    if 'not_in_comp' in cont_and_colors[entry]:
+        cont_and_colors.pop(entry)
+
+df = pd.DataFrame.from_dict(cont_and_colors, orient = 'index', columns = ['episode', 'outcome'])
+df
+
+
 
 # elim_chart.find('td', text = re.compile('Terry'))
 
