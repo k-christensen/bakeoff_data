@@ -60,12 +60,14 @@ for l in contestant_name_age_town.values():
     area = l[-1]
     l.append(area_stats(area))
 
+for l in contestant_name_age_town.values():
+    l.pop(1)
+
+
+
 pd.DataFrame.from_dict(contestant_name_age_town, orient = 'index')
 
-[list(val[-1].values())for val in copy_contestant_name_age_town.values()]
-
-
-[item[-1].split('/')[-1] for item in contestant_name_age_town.values()]
+contestant_name_age_town
 
 
 color_meaning_dict = {'lightblue':'next_round', 
