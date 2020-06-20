@@ -87,8 +87,6 @@ for name, l in contestant_name_age_town.items():
         for k,v in di.items():
             cols_and_vals[k] = v 
 
-df_dict
-
 color_meaning_dict = {'lightblue':'next_round', 
 'cornflowerblue':'judge_fav',
 'plum': 'least_fav', 
@@ -140,11 +138,8 @@ for entry in list(cont_and_colors):
         cont_and_colors.pop(entry)
 
 df = pd.DataFrame.from_dict(cont_and_colors, orient = 'index')
-df
 
 
-
-cont_and_colors
 
 # elim_chart.find('td', text = re.compile('Terry'))
 
