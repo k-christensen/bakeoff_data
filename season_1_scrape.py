@@ -63,12 +63,31 @@ for l in contestant_name_age_town.values():
 for l in contestant_name_age_town.values():
     l.pop(1)
 
+long_names = list(contestant_name_age_town.keys())
 
+for shorter in contestant_name_list:
+    for longer in list(contestant_name_age_town.keys()):
+        if shorter in longer:
+            contestant_name_age_town[shorter] = contestant_name_age_town[longer]
 
-pd.DataFrame.from_dict(contestant_name_age_town, orient = 'index')
+for name in list(contestant_name_age_town.keys()):
+    if name in long_names:
+        del contestant_name_age_town[name]
 
 contestant_name_age_town
 
+df_dict = {}
+
+for name, l in contestant_name_age_town.items():
+    cols_and_vals = {}
+    df_dict[name] = cols_and_vals
+    cols_and_vals['age'] = l[0]
+    cols_and_vals['town_name'] = list(l[1].keys())[0]
+    for di in list(l[1].values()):
+        for k,v in di.items():
+            cols_and_vals[k] = v 
+
+df_dict
 
 color_meaning_dict = {'lightblue':'next_round', 
 'cornflowerblue':'judge_fav',
@@ -88,7 +107,6 @@ for item in elim_chart.find_all('th'):
         max_ep = int(item.text.rstrip())
 
 cont_and_colors = {}
-len_of_chart = int(elim_chart.th.get('colspan'))
 
 for name in contestant_name_list:
     name_tag = elim_chart.find('td', text = re.compile(name))
@@ -110,17 +128,23 @@ for name in contestant_name_list:
     meaning_list = [color_meaning_dict[color.lower()] for color in color_list]
     episode_num_list = [num for num in list(range(1,max_ep+1))]
     episode_and_outcome = [list(item) for item in list(zip(episode_num_list,meaning_list))]
+    episode_and_outcome_dict = [{'episode':l[0], 'outcome':l[1]}for l in episode_and_outcome]
+    for d in episode_and_outcome_dict:
+        d.update(df_dict[name])
+    episode_and_outcome_dict
     key_list = ["{}_episode_{}".format(name.rstrip(), num) for num in list(range(1,max_ep+1))]
-    cont_and_colors.update(dict(zip(key_list, episode_and_outcome)))
+    cont_and_colors.update(dict(zip(key_list, episode_and_outcome_dict)))
 
 for entry in list(cont_and_colors):
     if 'not_in_comp' in cont_and_colors[entry]:
         cont_and_colors.pop(entry)
 
-df = pd.DataFrame.from_dict(cont_and_colors, orient = 'index', columns = ['episode', 'outcome'])
+df = pd.DataFrame.from_dict(cont_and_colors, orient = 'index')
 df
 
 
+
+cont_and_colors
 
 # elim_chart.find('td', text = re.compile('Terry'))
 
