@@ -125,8 +125,9 @@ for name in contestant_name_list:
     color_list = color_list[:max_ep]
     meaning_list = [color_meaning_dict[color.lower()] for color in color_list]
     episode_num_list = [num for num in list(range(1,max_ep+1))]
-    episode_and_outcome = [list(item) for item in list(zip(episode_num_list,meaning_list))]
-    episode_and_outcome_dict = [{'episode':l[0], 'outcome':l[1]}for l in episode_and_outcome]
+    episode_fraction_list = [num/max_ep for num in list(range(1,max_ep+1))]
+    episode_and_outcome = [list(item) for item in list(zip(episode_num_list,meaning_list, episode_fraction_list))]
+    episode_and_outcome_dict = [{'episode':l[0], 'outcome':l[1], 'fraction_done':l[2]}for l in episode_and_outcome]
     for d in episode_and_outcome_dict:
         d.update(df_dict[name])
     episode_and_outcome_dict
@@ -140,6 +141,13 @@ for entry in list(cont_and_colors):
 
 df = pd.DataFrame.from_dict(cont_and_colors, orient = 'index')
 
+df
+
+# a = ['a', 's', 'd']
+# b = ['q', 'w', 'e']
+# c = ['p', 'o', 'l']
+
+# list(zip(a,b,c))
 
 
 # elim_chart.find('td', text = re.compile('Terry'))
