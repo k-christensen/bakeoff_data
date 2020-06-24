@@ -134,8 +134,9 @@ for name in contestant_name_list:
     cont_and_colors.update(dict(zip(key_list, episode_and_outcome_dict)))
 
 for entry in list(cont_and_colors):
-    if 'not_in_comp' in cont_and_colors[entry]:
+    if 'not_in_comp' in cont_and_colors[entry]['outcome']:
         cont_and_colors.pop(entry)
+
 
 df = pd.DataFrame.from_dict(cont_and_colors, orient = 'index')
 
