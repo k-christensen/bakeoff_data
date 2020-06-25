@@ -141,7 +141,16 @@ for entry in list(cont_and_colors):
 
 df = pd.DataFrame.from_dict(cont_and_colors, orient = 'index')
 
-df
+outcome_dummies = pd.get_dummies(df['outcome'])
+
+df_with_dummies = df.join(outcome_dummies)
+
+df_with_dummies.drop(columns='outcome', inplace=True)
+
+for h in soup.findAll('h3'):
+    if "Episode" in h.text:
+        print([item for item in re.split("(?:\D)", h.text) if item][0])
+
 
 # a = ['a', 's', 'd']
 # b = ['q', 'w', 'e']
