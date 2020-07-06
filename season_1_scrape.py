@@ -170,19 +170,3 @@ for h in soup.findAll('h3'):
 #         print(name)
 #         name_tag = elim_chart.find('span', text = re.compile(name))
 #         print(name_tag)
-
-
-# notes
-# light blue - through to next round
-# cornflower blue - judge fav
-# orangered - eliminated
-# plum - least fav but not eliminated
-
-
-# for d in elim_chart.find_all('td'):
-#     if d.has_attr('style'):
-#         print(d.get('style'))
-
-# for d in elim_chart.find_all('td'):
-#     if d.has_attr('style'):
-#         print(d.text)
