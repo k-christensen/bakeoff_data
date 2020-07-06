@@ -150,23 +150,3 @@ for h in soup.findAll('h3'):
     if "Episode" in h.text:
         print([item for item in re.split("(?:\D)", h.text) if item][0])
 
-
-
-# elim_chart.find('td', text = re.compile('Terry'))
-
-# def fn(tag, num =1):
-#     cycle = 0
-#     while cycle<num:
-#         tag = tag.find_next_sibling()
-#         cycle += 1
-#     return tag
-
-# fn(elim_chart.find('td', text = re.compile('Terry')),4)
-
-# tag_list = []
-# for name in contestant_name_list:
-#     name_tag = elim_chart.find('td', text = re.compile(name))
-#     if name_tag is None:
-#         print(name)
-#         name_tag = elim_chart.find('span', text = re.compile(name))
-#         print(name_tag)
