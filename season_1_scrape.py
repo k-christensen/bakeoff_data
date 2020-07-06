@@ -151,12 +151,6 @@ for h in soup.findAll('h3'):
         print([item for item in re.split("(?:\D)", h.text) if item][0])
 
 
-# a = ['a', 's', 'd']
-# b = ['q', 'w', 'e']
-# c = ['p', 'o', 'l']
-
-# list(zip(a,b,c))
-
 
 # elim_chart.find('td', text = re.compile('Terry'))
 
