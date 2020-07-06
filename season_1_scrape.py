@@ -22,7 +22,6 @@ def cont_name_list(elim_chart):
             contestant_name_list.append(d.text) 
     return [name.rstrip() for name in contestant_name_list]
 
-
 contestant_name_list = cont_name_list(elim_chart)
 
 contestant_name_age_town = {item.td.text:
@@ -69,17 +68,25 @@ for l in contestant_name_age_town.values():
 for l in contestant_name_age_town.values():
     l.pop(1)
 
+# this bit takes the area stats func 
+# and replaces the url snippet with the actual area stats
+# then it takes out the url snippet as that's no longer needed
+
 long_names = list(contestant_name_age_town.keys())
 
 for shorter in contestant_name_list:
     for longer in list(contestant_name_age_town.keys()):
         if shorter in longer:
             contestant_name_age_town[shorter] = contestant_name_age_town[longer]
+# this makes a duplicate dict entry 
+# with the key being the shorter name 
+# instead of the full name
 
 for name in list(contestant_name_age_town.keys()):
     if name in long_names:
         del contestant_name_age_town[name]
 
+# this takes out the entries with the full name
 
 df_dict = {}
 
