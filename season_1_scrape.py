@@ -74,7 +74,6 @@ for name in list(contestant_name_age_town.keys()):
     if name in long_names:
         del contestant_name_age_town[name]
 
-contestant_name_age_town
 
 df_dict = {}
 
