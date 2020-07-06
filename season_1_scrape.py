@@ -13,15 +13,17 @@ for t in soup.find_all("table"):
     if "Elimination chart" in t.th.text:
         elim_chart = t
 
-contestant_name_list = []
+def cont_name_list(elim_chart):
+    contestant_name_list = []
+    for d in elim_chart.find_all('td'):
+        if d.has_attr('align'):
+            contestant_name_list.append(d.text)
+        elif 'align' in d.get('style'):
+            contestant_name_list.append(d.text) 
+    return [name.rstrip() for name in contestant_name_list]
 
-for d in elim_chart.find_all('td'):
-    if d.has_attr('align'):
-        contestant_name_list.append(d.text)
-    elif 'align' in d.get('style'):
-        contestant_name_list.append(d.text) 
 
-contestant_name_list = [name.rstrip() for name in contestant_name_list]
+contestant_name_list = cont_name_list(elim_chart)
 
 contestant_name_age_town = {item.td.text:
 [int(item.td.find_next_sibling().text), 
@@ -29,6 +31,10 @@ item.td.find_next_sibling().find_next_sibling().find_next_sibling().a.get('href'
 for item in 
 soup.find("table", class_="wikitable").find_all('tr')
 if item.td is not None}
+# at this point the dict is 
+# key =  contesntant full name
+# value = list containing contestant age and wiki url snippet 
+# (i.e. '/wiki/Essex')
 
 def area_stats(url_snippet):
     stats_dict = {'density':None}
