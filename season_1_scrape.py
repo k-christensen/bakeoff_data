@@ -66,10 +66,7 @@ def area_stats(url_snippet):
 for l in contestant_name_age_town.values():
     town = l[-1]
     l.extend(area_stats(town))
-
-for l in contestant_name_age_town.values():
     l.pop(1)
-
 
 contestant_name_age_town
 
