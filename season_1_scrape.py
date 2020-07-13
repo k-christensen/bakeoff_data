@@ -36,7 +36,8 @@ if item.td is not None}
 # (i.e. '/wiki/Essex')
 
 def area_stats(url_snippet):
-    stats_dict = {'density':None}
+    stats_dict = {'density':None, 'pop':None}
+
     if type(url_snippet) == str:
         area_url = 'https://en.wikipedia.org{}'.format(url_snippet)  
         area_page = requests.get(area_url)
@@ -47,10 +48,11 @@ def area_stats(url_snippet):
             if 'Density' in item.text:
                 if item.find_next_sibling().text:
                     density_str = item.find_next_sibling().text
-                    for elem in item.find_next_sibling().text.split():
+                    for elem in density_str.split():
                         if "/km" in elem:
                             d = int([item for item in re.split("(\d*,?\d*)",elem) if len(item)>1][0].replace(',',''))
                             stats_dict['density'] = d
+
             if 'Population' in item.text:
                 if item.find_next_sibling() is None:
                     stats_dict['pop'] = re.split('(\d*,\d*)',item.parent.find_next_sibling().text)[1]
@@ -63,12 +65,13 @@ def area_stats(url_snippet):
 
 for l in contestant_name_age_town.values():
     town = l[-1]
-    l.append(area_stats(town))
+    l.extend(area_stats(town))
 
 for l in contestant_name_age_town.values():
     l.pop(1)
 
-[list[-1].values() for list in contestant_name_age_town.values()]
+
+contestant_name_age_town
 
 # this bit takes the area stats func 
 # and replaces the url snippet with the actual area stats
