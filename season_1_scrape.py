@@ -60,7 +60,7 @@ def area_stats(url_snippet):
                     pass
                 else:
                     pop_str = item.find_next_sibling().text
-                    stats_dict['pop']= pop_str.split()[0]
+                    stats_dict['pop']= int(pop_str.split()[0].replace(',',''))
     return [url_snippet.split('/')[-1], stats_dict]
 
 for l in contestant_name_age_town.values():
