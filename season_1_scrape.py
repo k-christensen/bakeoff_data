@@ -94,10 +94,10 @@ for name, l in contestant_name_age_town.items():
     cols_and_vals = {}
     df_dict[name] = cols_and_vals
     cols_and_vals['age'] = l[0]
-    cols_and_vals['town_name'] = list(l[1].keys())[0]
-    for di in list(l[1].values()):
-        for k,v in di.items():
-            cols_and_vals[k] = v 
+    cols_and_vals['town_name'] = l[1]
+    for k,v in l[2].items():
+        cols_and_vals[k] = v
+         
 
 color_meaning_dict = {'lightblue':'next_round', 
 'cornflowerblue':'judge_fav',
