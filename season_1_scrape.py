@@ -68,8 +68,6 @@ for l in contestant_name_age_town.values():
     l.extend(area_stats(town))
     l.pop(1)
 
-contestant_name_age_town
-
 # this bit takes the area stats func 
 # and replaces the url snippet with the actual area stats
 # then it takes out the url snippet as that's no longer needed
