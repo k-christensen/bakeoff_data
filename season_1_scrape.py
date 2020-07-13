@@ -25,8 +25,8 @@ def cont_name_list(elim_chart):
 contestant_name_list = cont_name_list(elim_chart)
 
 contestant_name_age_town = {item.td.text:
-[int(item.td.find_next_sibling().text), 
-item.td.find_next_sibling().find_next_sibling().find_next_sibling().a.get('href')] 
+[int(item.td.find_next_siblings(limit = 3)[0].text), 
+item.td.find_next_siblings(limit = 3)[2].a.get('href')] 
 for item in 
 soup.find("table", class_="wikitable").find_all('tr')
 if item.td is not None}
@@ -59,14 +59,16 @@ def area_stats(url_snippet):
                 else:
                     pop_str = item.find_next_sibling().text
                     stats_dict['pop']= pop_str.split()[0]
-    return {url_snippet.split('/')[-1]:stats_dict}
+    return [url_snippet.split('/')[-1], stats_dict]
 
 for l in contestant_name_age_town.values():
-    area = l[-1]
-    l.append(area_stats(area))
+    town = l[-1]
+    l.append(area_stats(town))
 
 for l in contestant_name_age_town.values():
     l.pop(1)
+
+[list[-1].values() for list in contestant_name_age_town.values()]
 
 # this bit takes the area stats func 
 # and replaces the url snippet with the actual area stats
@@ -150,7 +152,7 @@ for entry in list(cont_and_colors):
     if 'not_in_comp' in cont_and_colors[entry]['outcome']:
         cont_and_colors.pop(entry)
 
-
+cont_and_colors
 df = pd.DataFrame.from_dict(cont_and_colors, orient = 'index')
 
 outcome_dummies = pd.get_dummies(df['outcome'])
