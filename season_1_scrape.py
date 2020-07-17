@@ -202,7 +202,7 @@ season_outcomes_list
 season_cumulative_list = []
 for num in list(range(0,max_ep)):
     if season_cumulative_list:
-        template_dict = list(season_cumulative_dict.values())[-1]
+        template_dict = season_cumulative_list[-1]
         template_dict[color_meaning_dict[ex_color_list[num]]] = template_dict[color_meaning_dict[ex_color_list[num]]]+1
     else:
         template_dict = {k:0 for k in color_meaning_dict.values()}
@@ -214,4 +214,6 @@ for num in list(range(0,max_ep)):
 season_cumulative_list
 
 color_meaning_dict
+
+color_meaning_dict[ex_color_list[0]]
 
