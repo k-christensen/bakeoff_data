@@ -199,6 +199,8 @@ for num in list(range(0,max_ep)):
 
 season_outcomes_list
 
+# maybe try making a template thats like ep 0 frac 0 all the outcomes and total outcomes?
+
 season_cumulative_list = []
 for num in list(range(0,max_ep)):
     if season_cumulative_list:
