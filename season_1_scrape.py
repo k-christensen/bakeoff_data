@@ -208,8 +208,8 @@ for num in list(range(0,max_ep)):
         template_dict = {k:0 for k in color_meaning_dict.values()}
         template_dict[color_meaning_dict[ex_color_list[num]]] = 1
     episode_dict = {"episode":num+1, "fraction_done":(num+1)/max_ep}
-    episode_dict.update(template_dict)
-    season_cumulative_list.append(episode_dict)
+    template_dict.update(episode_dict)
+    season_cumulative_list.append(template_dict)
 
 season_cumulative_list
 
