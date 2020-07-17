@@ -142,9 +142,10 @@ for name in contestant_name_list:
     episode_and_outcome_dict = [{'episode':l[0], 'outcome':l[1], 'fraction_done':l[2]}for l in episode_and_outcome]
     for d in episode_and_outcome_dict:
         d.update(df_dict[name])
-    episode_and_outcome_dict
     key_list = ["{}_episode_{}".format(name.rstrip(), num) for num in list(range(1,max_ep+1))]
     cont_and_colors.update(dict(zip(key_list, episode_and_outcome_dict)))
+
+episode_and_outcome_dict
 
 for entry in list(cont_and_colors):
     if 'not_in_comp' in cont_and_colors[entry]['outcome']:
@@ -164,6 +165,8 @@ for h in soup.findAll('h3'):
         print([item for item in re.split("(?:\D)", h.text) if item][0])
 
 
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ex_name = contestant_name_list[0]
 ex_name_tag = elim_chart.find('td', text = re.compile(ex_name))
@@ -186,27 +189,29 @@ ex_color_list
 
 color_meaning_dict
 
-season_outcomes_dict = {}
+season_outcomes_list = []
 for num in list(range(0,max_ep)):
     template_dict = {k:0 for k in color_meaning_dict.values()}
     template_dict[color_meaning_dict[ex_color_list[num]]] = 1
-    episode_dict = {"ep_{}_outcome".format(num+1):template_dict}
-    season_outcomes_dict.update(episode_dict)
+    episode_dict = {"episode":num+1, "fraction_done":(num+1)/max_ep}
+    episode_dict.update(template_dict)
+    season_outcomes_list.append(episode_dict)
 
-season_cumulative_dict = {}
+season_outcomes_list
+
+season_cumulative_list = []
 for num in list(range(0,max_ep)):
-    if season_cumulative_dict:
+    if season_cumulative_list:
         template_dict = list(season_cumulative_dict.values())[-1]
         template_dict[color_meaning_dict[ex_color_list[num]]] = template_dict[color_meaning_dict[ex_color_list[num]]]+1
     else:
         template_dict = {k:0 for k in color_meaning_dict.values()}
         template_dict[color_meaning_dict[ex_color_list[num]]] = 1
-    episode_dict = {"ep_{}_cumulative".format(num+1):template_dict}
-    season_cumulative_dict.update(episode_dict)
+    episode_dict = {"episode":num+1, "fraction_done":(num+1)/max_ep}
+    episode_dict.update(template_dict)
+    season_cumulative_list.append(episode_dict)
 
-
-
-season_cumulative_dict
+season_cumulative_list
 
 color_meaning_dict
 
