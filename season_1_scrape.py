@@ -219,3 +219,22 @@ color_meaning_dict
 
 color_meaning_dict[ex_color_list[0]]
 
+episode_info = {'episode':0, 'fraction_done':0}
+template_dict = {k:0 for k in color_meaning_dict.values()}
+total_template_dict = {"total_{}".format(k):0 for k in color_meaning_dict.values()}
+full_dict = {**episode_info, **template_dict, **total_template_dict}
+
+season_list = []
+num = 0
+while num < max_ep:
+    ep = full_dict
+    ep['episode'] = num+1
+    ep['fraction_done'] = (num+1)/max_ep
+    ep[color_meaning_dict[ex_color_list[num]]] = 1
+    ep["total_{}".format(color_meaning_dict[ex_color_list[num]])] += 1
+    season_list.append(ep)
+    num += 1
+
+season_list
+
+full_dict
