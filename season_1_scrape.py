@@ -13,6 +13,7 @@ for t in soup.find_all("table"):
     if "Elimination chart" in t.th.text:
         elim_chart = t
 
+# takes the elimination chart, creates list of names
 def cont_name_list(elim_chart):
     contestant_name_list = []
     for d in elim_chart.find_all('td'):
@@ -97,7 +98,6 @@ for name, l in contestant_name_age_town.items():
     cols_and_vals['town_name'] = l[1]
     for k,v in l[2].items():
         cols_and_vals[k] = v
-         
 
 color_meaning_dict = {'lightblue':'next_round', 
 'cornflowerblue':'judge_fav',
@@ -162,4 +162,51 @@ df_with_dummies.drop(columns='outcome', inplace=True)
 for h in soup.findAll('h3'):
     if "Episode" in h.text:
         print([item for item in re.split("(?:\D)", h.text) if item][0])
+
+
+
+ex_name = contestant_name_list[0]
+ex_name_tag = elim_chart.find('td', text = re.compile(ex_name))
+ex_tag = ex_name_tag.find_next()
+ex_color_list = []
+while len(ex_color_list) < max_ep:
+    colspan = 1
+    if ex_tag.has_attr('style'):
+        color = ex_tag.get('style')
+    if ex_tag.has_attr('colspan'):
+        colspan = int(ex_tag.get('colspan'))
+    ex_color_list.extend([x for x in 
+    re.split("(?:background:\s?)(\w*)(?:;)”?", color) 
+    if x] * colspan)
+    ex_tag = ex_tag.find_next_sibling()
+ex_color_list = ex_color_list[:max_ep]
+ex_color_list = [n.lower() for n in ex_color_list]
+ 
+ex_color_list
+
+color_meaning_dict
+
+season_outcomes_dict = {}
+for num in list(range(0,max_ep)):
+    template_dict = {k:0 for k in color_meaning_dict.values()}
+    template_dict[color_meaning_dict[ex_color_list[num]]] = 1
+    episode_dict = {"ep_{}_outcome".format(num+1):template_dict}
+    season_outcomes_dict.update(episode_dict)
+
+season_cumulative_dict = {}
+for num in list(range(0,max_ep)):
+    if season_cumulative_dict:
+        template_dict = list(season_cumulative_dict.values())[-1]
+        template_dict[color_meaning_dict[ex_color_list[num]]] = template_dict[color_meaning_dict[ex_color_list[num]]]+1
+    else:
+        template_dict = {k:0 for k in color_meaning_dict.values()}
+        template_dict[color_meaning_dict[ex_color_list[num]]] = 1
+    episode_dict = {"ep_{}_cumulative".format(num+1):template_dict}
+    season_cumulative_dict.update(episode_dict)
+
+
+
+season_cumulative_dict
+
+color_meaning_dict
 
