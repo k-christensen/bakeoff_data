@@ -227,13 +227,41 @@ full_dict = {**episode_info, **template_dict, **total_template_dict}
 season_list = []
 num = 0
 while num < max_ep:
-    ep = full_dict
-    ep['episode'] = num+1
-    ep['fraction_done'] = (num+1)/max_ep
-    ep[color_meaning_dict[ex_color_list[num]]] = 1
-    ep["total_{}".format(color_meaning_dict[ex_color_list[num]])] += 1
-    season_list.append(ep)
+    if season_list:
+        ep = season_list[-1]
+        ep['episode'] = num+1
+        ep['fraction_done'] = (num+1)/max_ep
+        ep[color_meaning_dict[ex_color_list[num]]] = 1
+        ep["total_{}".format(color_meaning_dict[ex_color_list[num]])] += 1
+        season_list.append(ep)
+    else:
+        first_ep = full_dict.copy()
+        first_ep['episode'] = num+1
+        first_ep['fraction_done'] = (num+1)/max_ep
+        first_ep[color_meaning_dict[ex_color_list[num]]] = 1
+        first_ep["total_{}".format(color_meaning_dict[ex_color_list[num]])] += 1
+        season_list.append(first_ep)
     num += 1
+
+
+# slice list instead of relying on dicts 
+
+
+num = 0
+test_list = []
+test_dict = full_dict.copy()
+while num<max_ep:
+    test_dict['episode'] = num+1
+    test_dict['fraction_done'] = (num+1)/max_ep
+    test_dict[color_meaning_dict[ex_color_list[num]]] = 1
+    test_list.append(test_dict)
+    num += 1
+test_list
+
+test_dict
+
+
+ex_color_list[:2]
 
 season_list
 
