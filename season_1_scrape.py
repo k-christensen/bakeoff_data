@@ -249,19 +249,28 @@ while num < max_ep:
 
 num = 0
 test_list = []
-test_dict = full_dict.copy()
 while num<max_ep:
-    test_dict['episode'] = num+1
+    test_dict = full_dict.copy()
+    current_episode = num+1
+    cont_history = ex_color_list[:current_episode]
+    test_dict['episode'] = current_episode
     test_dict['fraction_done'] = (num+1)/max_ep
-    test_dict[color_meaning_dict[ex_color_list[num]]] = 1
+    test_dict[color_meaning_dict[cont_history[-1]]] = 1
+    test_dict.update({"total_{}".format(color_meaning_dict[item]):ex_color_list.count(item) 
+    for item in list(set(cont_history))})
     test_list.append(test_dict)
     num += 1
 test_list
 
 test_dict
 
+len(ex_color_list)
 
-ex_color_list[:2]
+
+ex_color_list[:6]
+
+{"total_{}".format(color_meaning_dict[item]):ex_color_list.count(item) 
+for item in list(set(ex_color_list[:5]))}
 
 season_list
 
