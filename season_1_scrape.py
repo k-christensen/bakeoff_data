@@ -169,10 +169,12 @@ for name in contestant_name_list:
 df = pd.DataFrame.from_dict(cont_and_colors, orient = 'index')
 # current df has person's bio info and outcomes
 
+episode_technical_dict = {}
 for h in soup.findAll('h3'):
     if "Episode" in h.text:
-        print([item for item in re.split("(?:\D)", h.text) if item][0])
-        print(h.find_next_siblings(limit=3)[2])
-
-
-
+        ep = [item for item in re.split("(?:\D)", h.text) if item][0]
+        name_list = [item.text for item in h.find_next_siblings(limit=3)[2].findAll('td') if item.text in contestant_name_list]
+        place_list = [int(item.text[0]) for item in h.find_next_siblings(limit=3)[2].findAll('td') if item.text[0].isnumeric()]
+        cont_tech = dict(zip(name_list, place_list))
+        episode_technical_dict.update({int(ep):cont_tech})
+episode_technical_dict
