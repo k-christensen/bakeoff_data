@@ -111,6 +111,11 @@ color_meaning_dict = {'lightblue':'next_round',
 'darkgrey': 'not_in_comp',
 'gainsboro': 'unable_to_compete_week'}
 
+episode_info = {'episode':0, 'fraction_done':0}
+template_dict = {k:0 for k in color_meaning_dict.values()}
+total_template_dict = {"total_{}".format(k):0 for k in color_meaning_dict.values()}
+full_template_dict = {**episode_info, **template_dict, **total_template_dict}
+
 max_ep = 0
 for item in elim_chart.find_all('th'):
     if item.text.rstrip().isnumeric() and int(item.text.rstrip())> max_ep:
@@ -135,23 +140,31 @@ for name in contestant_name_list:
         if x] * colspan)
         tag = tag.find_next_sibling()
     color_list = color_list[:max_ep]
-    meaning_list = [color_meaning_dict[color.lower()] for color in color_list]
-    episode_num_list = [num for num in list(range(1,max_ep+1))]
-    episode_fraction_list = [num/max_ep for num in list(range(1,max_ep+1))]
-    episode_and_outcome = [list(item) for item in list(zip(episode_num_list,meaning_list, episode_fraction_list))]
-    episode_and_outcome_dict = [{'episode':l[0], 'outcome':l[1], 'fraction_done':l[2]}for l in episode_and_outcome]
-    for d in episode_and_outcome_dict:
+    color_list = [color.lower() for color in color_list]
+    num = 0
+    episode_and_outcome = []
+    while num<max_ep:
+        ep_dict = full_template_dict.copy()
+        current_episode = num+1
+        cont_history = color_list[:num]
+        ep_dict['episode'] = current_episode
+        ep_dict['fraction_done'] = current_episode/max_ep
+        if cont_history:
+            ep_dict[color_meaning_dict[cont_history[-1]]] = 1
+            ep_dict.update({"total_{}".format(color_meaning_dict[item]):
+            color_list.count(item) 
+            for item in list(set(cont_history))})
+        if color_meaning_dict[color_list[num]] in ['eliminated', 'runner-up']:
+            ep_dict['eliminated'] = 1
+        if color_meaning_dict[color_list[num]] is not 'not_in_comp':
+            episode_and_outcome.append(ep_dict)
+        num += 1
+    for d in episode_and_outcome:
         d.update(df_dict[name])
     key_list = ["{}_episode_{}".format(name.rstrip(), num) for num in list(range(1,max_ep+1))]
-    cont_and_colors.update(dict(zip(key_list, episode_and_outcome_dict)))
+    cont_and_colors.update(dict(zip(key_list, episode_and_outcome)))
 
-episode_and_outcome_dict
 
-for entry in list(cont_and_colors):
-    if 'not_in_comp' in cont_and_colors[entry]['outcome']:
-        cont_and_colors.pop(entry)
-
-cont_and_colors
 df = pd.DataFrame.from_dict(cont_and_colors, orient = 'index')
 
 outcome_dummies = pd.get_dummies(df['outcome'])
@@ -160,122 +173,13 @@ df_with_dummies = df.join(outcome_dummies)
 
 df_with_dummies.drop(columns='outcome', inplace=True)
 
+
+
+
+
 for h in soup.findAll('h3'):
     if "Episode" in h.text:
         print([item for item in re.split("(?:\D)", h.text) if item][0])
 
 
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-ex_name = contestant_name_list[1]
-ex_name_tag = elim_chart.find('td', text = re.compile(ex_name))
-ex_tag = ex_name_tag.find_next()
-ex_color_list = []
-while len(ex_color_list) < max_ep:
-    colspan = 1
-    if ex_tag.has_attr('style'):
-        color = ex_tag.get('style')
-    if ex_tag.has_attr('colspan'):
-        colspan = int(ex_tag.get('colspan'))
-    ex_color_list.extend([x for x in 
-    re.split("(?:background:\s?)(\w*)(?:;)”?", color) 
-    if x] * colspan)
-    ex_tag = ex_tag.find_next_sibling()
-ex_color_list = ex_color_list[:max_ep]
-ex_color_list = [n.lower() for n in ex_color_list]
- 
-ex_color_list
-
-color_meaning_dict
-
-season_outcomes_list = []
-for num in list(range(0,max_ep)):
-    template_dict = {k:0 for k in color_meaning_dict.values()}
-    template_dict[color_meaning_dict[ex_color_list[num]]] = 1
-    episode_dict = {"episode":num+1, "fraction_done":(num+1)/max_ep}
-    episode_dict.update(template_dict)
-    season_outcomes_list.append(episode_dict)
-
-season_outcomes_list
-
-# maybe try making a template thats like ep 0 frac 0 all the outcomes and total outcomes?
-
-season_cumulative_list = []
-for num in list(range(0,max_ep)):
-    if season_cumulative_list:
-        template_dict = season_cumulative_list[-1]
-        template_dict[color_meaning_dict[ex_color_list[num]]] = template_dict[color_meaning_dict[ex_color_list[num]]]+1
-    else:
-        template_dict = {k:0 for k in color_meaning_dict.values()}
-        template_dict[color_meaning_dict[ex_color_list[num]]] = 1
-    episode_dict = {"episode":num+1, "fraction_done":(num+1)/max_ep}
-    template_dict.update(episode_dict)
-    season_cumulative_list.append(template_dict)
-
-season_cumulative_list
-
-color_meaning_dict
-
-color_meaning_dict[ex_color_list[0]]
-
-episode_info = {'episode':0, 'fraction_done':0}
-template_dict = {k:0 for k in color_meaning_dict.values()}
-total_template_dict = {"total_{}".format(k):0 for k in color_meaning_dict.values()}
-full_dict = {**episode_info, **template_dict, **total_template_dict}
-
-season_list = []
-num = 0
-while num < max_ep:
-    if season_list:
-        ep = season_list[-1]
-        ep['episode'] = num+1
-        ep['fraction_done'] = (num+1)/max_ep
-        ep[color_meaning_dict[ex_color_list[num]]] = 1
-        ep["total_{}".format(color_meaning_dict[ex_color_list[num]])] += 1
-        season_list.append(ep)
-    else:
-        first_ep = full_dict.copy()
-        first_ep['episode'] = num+1
-        first_ep['fraction_done'] = (num+1)/max_ep
-        first_ep[color_meaning_dict[ex_color_list[num]]] = 1
-        first_ep["total_{}".format(color_meaning_dict[ex_color_list[num]])] += 1
-        season_list.append(first_ep)
-    num += 1
-
-
-# slice list instead of relying on dicts 
-
-
-num = 0
-test_list = []
-while num<max_ep:
-    test_dict = full_dict.copy()
-    current_episode = num+1
-    cont_history = ex_color_list[:num]
-    test_dict['episode'] = current_episode
-    test_dict['fraction_done'] = current_episode/max_ep
-    if cont_history:
-        test_dict[color_meaning_dict[cont_history[-1]]] = 1
-        test_dict.update({"total_{}".format(color_meaning_dict[item]):ex_color_list.count(item) 
-        for item in list(set(cont_history))})
-    if color_meaning_dict[ex_color_list[num]] in ['eliminated', 'runner-up']:
-        test_dict['eliminated'] = 1
-    test_list.append(test_dict)
-    num += 1
-test_list
-
-test_dict
-
-len(ex_color_list)
-
-
-ex_color_list[:6]
-
-{"total_{}".format(color_meaning_dict[item]):ex_color_list.count(item) 
-for item in list(set(ex_color_list[:5]))}
-
-season_list
-
-full_dict
 
