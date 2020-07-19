@@ -161,16 +161,17 @@ for name in contestant_name_list:
         num += 1
     for d in episode_and_outcome:
         d.update(df_dict[name])
+        d['name'] = name
     key_list = ["{}_episode_{}".format(name.rstrip(), num) for num in list(range(1,max_ep+1))]
     cont_and_colors.update(dict(zip(key_list, episode_and_outcome)))
 
 
 df = pd.DataFrame.from_dict(cont_and_colors, orient = 'index')
-
+# current df has person's bio info and outcomes
 
 for h in soup.findAll('h3'):
     if "Episode" in h.text:
         print([item for item in re.split("(?:\D)", h.text) if item][0])
 
-
+df_dict
 
