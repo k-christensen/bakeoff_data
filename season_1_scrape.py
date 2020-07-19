@@ -172,6 +172,7 @@ df = pd.DataFrame.from_dict(cont_and_colors, orient = 'index')
 for h in soup.findAll('h3'):
     if "Episode" in h.text:
         print([item for item in re.split("(?:\D)", h.text) if item][0])
+        print(h.find_next_siblings(limit=3)[2])
 
-df_dict
+
 
