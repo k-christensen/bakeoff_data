@@ -168,7 +168,7 @@ for h in soup.findAll('h3'):
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-ex_name = contestant_name_list[0]
+ex_name = contestant_name_list[1]
 ex_name_tag = elim_chart.find('td', text = re.compile(ex_name))
 ex_tag = ex_name_tag.find_next()
 ex_color_list = []
@@ -252,12 +252,15 @@ test_list = []
 while num<max_ep:
     test_dict = full_dict.copy()
     current_episode = num+1
-    cont_history = ex_color_list[:current_episode]
+    cont_history = ex_color_list[:num]
     test_dict['episode'] = current_episode
-    test_dict['fraction_done'] = (num+1)/max_ep
-    test_dict[color_meaning_dict[cont_history[-1]]] = 1
-    test_dict.update({"total_{}".format(color_meaning_dict[item]):ex_color_list.count(item) 
-    for item in list(set(cont_history))})
+    test_dict['fraction_done'] = current_episode/max_ep
+    if cont_history:
+        test_dict[color_meaning_dict[cont_history[-1]]] = 1
+        test_dict.update({"total_{}".format(color_meaning_dict[item]):ex_color_list.count(item) 
+        for item in list(set(cont_history))})
+    if color_meaning_dict[ex_color_list[num]] in ['eliminated', 'runner-up']:
+        test_dict['eliminated'] = 1
     test_list.append(test_dict)
     num += 1
 test_list
@@ -275,3 +278,4 @@ for item in list(set(ex_color_list[:5]))}
 season_list
 
 full_dict
+
