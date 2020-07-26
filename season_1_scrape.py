@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import pandas as pd
 import re
+import numpy as np
 
 url = 'https://en.wikipedia.org/wiki/The_Great_British_Bake_Off_(series_1)'
 
@@ -169,18 +170,10 @@ for name in contestant_name_list:
 df = pd.DataFrame.from_dict(cont_and_colors, orient = 'index')
 # current df has person's bio info and outcomes
 
+
+
 episode_technical_dict = {}
-for h in soup.findAll('h3'):
-    if "Episode" in h.text:
-        ep = [item for item in re.split("(?:\D)", h.text) if item][0]
-        name_list = [item.text for item in h.find_next_siblings(limit=3)[2].findAll('td') if item.text in contestant_name_list]
-        place_list = [re.split("(?:\D)", item.text)[0] for item in h.find_next_siblings(limit=3)[2].findAll('td') if item.text[0].isnumeric()]
-        cont_tech = dict(zip(name_list, place_list))
-        episode_technical_dict.update({int(ep):cont_tech})
-episode_technical_dict
 
-
-example_dict = {}
 for h in soup.findAll('h3'):
     if "Episode" in h.text:
         ep = [item for item in re.split("(?:\D)", h.text) if item][0]
@@ -192,16 +185,45 @@ for h in soup.findAll('h3'):
                 place.append([x for x in re.split("(\d?\d|N/A)",item.find_next_siblings(limit=2)[1].text) if x][0]) 
             episode_placement = dict(zip(names,place))
             episode_placement = {key:value for (key,value) in episode_placement.items() if value == 'N/A' or value.isnumeric()}
-        example_dict.update({int(ep):episode_placement})
-example_dict
-
-{item for item in  if item.values().isnumeric() or "N/A"}        
-
-
-
-example_dict[1].values()
-
-        print([item.text for item in h.find_next_siblings(limit=3)[2].findAll('td') if item.text in contestant_name_list])
-
+            if 'N/A' in episode_placement.values():
+                num_list = [int(p) for p in episode_placement.values() if p.isnumeric()]
+                ave = np.average(num_list)
+                for n in episode_placement.keys():
+                    if episode_placement[n] == 'N/A':
+                        episode_placement[n] = ave
+            episode_placement = {key:value for (key,value) in episode_placement.items() if np.isnan(value) is False}
+        episode_technical_dict.update({int(ep):episode_placement})
+# episode_technical_dict = {key:value for (key,value) in episode_technical_dict.items() if any(item.isfinite() for item in list(value.values()))}
 
 episode_technical_dict
+
+for v in episode_technical_dict.values():
+    if 'N/A' in v.values():
+        problem_dict = v
+        num_list = [int(p) for p in v.values() if p.isnumeric()]
+        ave = np.average(num_list)
+        
+        
+
+episode_technical_dict.values()
+
+episode_technical_dict       
+
+empty = []
+em_ave = [np.mean(empty)]
+
+np.isnan(em_ave[0])
+
+[item for item in em_ave if any(item.isnumeric() for item in em_ave)]
+
+
+for h in soup.findAll('h3'):
+    if "Episode" in h.text:
+        ep = [item for item in re.split("(?:\D)", h.text) if item][0]
+        names = []
+        place = []
+        for item in h.find_next_siblings(limit=3)[2].findAll('th'):
+            if "Technical" in item.text:
+                print(item.find_all_next(limit=7)[6])
+            # if item.text in contestant_name_list:
+            #     print(item.parent.find_previous_sibling())
