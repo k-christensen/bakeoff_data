@@ -190,6 +190,7 @@ for h in soup.findAll('h3'):
             num_list = [int(p) for p in place if str(p).isnumeric()]
             ave = np.average(num_list)
             place = [ave if x == 'N/A' else x for x in place]
+        place = [float(x) for x in place]
         episode_placement = dict(zip(names,place))
         tech_results_list.append(episode_placement)
 
