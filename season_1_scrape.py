@@ -170,7 +170,48 @@ for name in contestant_name_list:
 df = pd.DataFrame.from_dict(cont_and_colors, orient = 'index')
 # current df has person's bio info and outcomes
 
+ep_counter = 0
+tech_results_list = []
+ep_tech = {1:{name:0 for name in contestant_name_list}}
+for h in soup.findAll('h3'):
+    if "Episode" in h.text:
+        names = []
+        place = []
+        for item in h.find_next_siblings(limit=3)[2].findAll('th'):
+            if "Technical" in item.text:
+                result_tables = item.parent.parent.findAll('td')
+                ep_counter += 1
+        ep_list = list(range(2,ep_counter+2))
+        for t in result_tables:
+            if t.text in contestant_name_list:
+                names.append(t.text)
+                place.append([x for x in re.split("(\d?\d|N/A)",t.find_next_siblings(limit=2)[1].text) if x][0])
+        if 'N/A' in place:
+            num_list = [int(p) for p in place if str(p).isnumeric()]
+            ave = np.average(num_list)
+            place = [ave if x == 'N/A' else x for x in place]
+        episode_placement = dict(zip(names,place))
+        tech_results_list.append(episode_placement)
 
+ep_tech.update(dict(zip(ep_list,tech_results_list)))
+
+ep_tech
+
+tech_tuple = {}
+for k,v in ep_tech.items():
+    for n,p in v.items():
+        tech_tuple.update({(n,k):p})
+tech_tuple
+
+df
+placement_list = []
+name_and_ep = list(tuple(zip(df['name'], df['episode'])))
+for item in name_and_ep:
+    placement_list.append(tech_tuple[item])
+
+placement_list
+df
+list(tech_tuple.keys())[6]==name_and_ep[0]
 
 episode_technical_dict = {}
 
@@ -243,7 +284,7 @@ for h in soup.findAll('h3'):
         tech_results_list.append(episode_placement)
 
 ep_tech = dict(zip(ep_list,tech_results_list))
-ep_tech
+
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
