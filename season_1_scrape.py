@@ -196,122 +196,15 @@ for h in soup.findAll('h3'):
 
 ep_tech.update(dict(zip(ep_list,tech_results_list)))
 
-ep_tech
 
 tech_tuple = {}
 for k,v in ep_tech.items():
     for n,p in v.items():
         tech_tuple.update({(n,k):p})
-tech_tuple
 
-df
 placement_list = []
 name_and_ep = list(tuple(zip(df['name'], df['episode'])))
 for item in name_and_ep:
     placement_list.append(tech_tuple[item])
 
-placement_list
-df
-list(tech_tuple.keys())[6]==name_and_ep[0]
-
-episode_technical_dict = {}
-
-for h in soup.findAll('h3'):
-    if "Episode" in h.text:
-        ep = [item for item in re.split("(?:\D)", h.text) if item][0]
-        names = []
-        place = []
-        for item in h.find_next_siblings(limit=3)[2].findAll('td'):
-            if item.text in contestant_name_list:
-                names.append(item.text)
-                place.append([x for x in re.split("(\d?\d|N/A)",item.find_next_siblings(limit=2)[1].text) if x][0]) 
-            episode_placement = dict(zip(names,place))
-            episode_placement = {key:value for (key,value) in episode_placement.items() if value == 'N/A' or value.isnumeric()}
-            if 'N/A' in episode_placement.values():
-                num_list = [int(p) for p in episode_placement.values() if p.isnumeric()]
-                ave = np.average(num_list)
-                for n in episode_placement.keys():
-                    if episode_placement[n] == 'N/A':
-                        episode_placement[n] = ave
-            episode_placement = {key:value for (key,value) in episode_placement.items() if np.isnan(value) is False}
-        episode_technical_dict.update({int(ep):episode_placement})
-# episode_technical_dict = {key:value for (key,value) in episode_technical_dict.items() if any(item.isfinite() for item in list(value.values()))}
-
-episode_technical_dict
-
-for v in episode_technical_dict.values():
-    if 'N/A' in v.values():
-        problem_dict = v
-        num_list = [int(p) for p in v.values() if p.isnumeric()]
-        ave = np.average(num_list)
-        
-        
-
-episode_technical_dict.values()
-
-episode_technical_dict       
-
-empty = []
-em_ave = [np.mean(empty)]
-
-np.isnan(em_ave[0])
-
-[item for item in em_ave if any(item.isnumeric() for item in em_ave)]
-
-# part that works that I'm incorporating tomorrow
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-ep_counter = 0
-tech_results_list = []
-for h in soup.findAll('h3'):
-    if "Episode" in h.text:
-        names = []
-        place = []
-        for item in h.find_next_siblings(limit=3)[2].findAll('th'):
-            if "Technical" in item.text:
-                result_tables = item.parent.parent.findAll('td')
-                ep_counter += 1
-        ep_list = list(range(1,ep_counter+1))
-        for t in result_tables:
-            if t.text in contestant_name_list:
-                names.append(t.text)
-                place.append([x for x in re.split("(\d?\d|N/A)",t.find_next_siblings(limit=2)[1].text) if x][0])
-                episode_placement = dict(zip(names,place))
-                if 'N/A' in episode_placement.values():
-                    num_list = [int(p) for p in episode_placement.values() if p.isnumeric()]
-                    ave = np.average(num_list)
-                    for k in episode_placement.keys():
-                        if episode_placement[k]=='N/A':
-                            episode_placement[k] = ave
-        tech_results_list.append(episode_placement)
-
-ep_tech = dict(zip(ep_list,tech_results_list))
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-            # if item.text in contestant_name_list:
-            #     print(item.parent.find_previous_sibling())
-
-ep_counter = 0
-
-for h in soup.findAll('th'):
-    if "Technical" in h.text: 
-        ep_counter += 1
-        ep_list = list(range(1,ep_counter+1))
-        for t in h.find_next_sibling():
-            print(t)
-            # names = []
-            # place = []
-            # if t.text in contestant_name_list:
-            #     names.append(t.text)
-            #     place.append([x for x in re.split("(\d?\d|N/A)",t.find_next_siblings(limit=2)[1].text) if x][0])
-            #     episode_placement = dict(zip(names,place))
-            #     episode_placement = {key:value for (key,value) in episode_placement.items() if value == 'N/A' or value.isnumeric()}
-            #     tech_results_list.append(episode_placement)
-
-tech_results_list
-
-
-
- 
+df['technical'] = placement_list
