@@ -216,6 +216,8 @@ np.isnan(em_ave[0])
 
 [item for item in em_ave if any(item.isnumeric() for item in em_ave)]
 
+# part that works that I'm incorporating tomorrow
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ep_counter = 0
 tech_results_list = []
 for h in soup.findAll('h3'):
@@ -243,8 +245,7 @@ for h in soup.findAll('h3'):
 ep_tech = dict(zip(ep_list,tech_results_list))
 ep_tech
 
-ep_list
-type('asdfsd') == str
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
             # if item.text in contestant_name_list:
