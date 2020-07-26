@@ -216,14 +216,54 @@ np.isnan(em_ave[0])
 
 [item for item in em_ave if any(item.isnumeric() for item in em_ave)]
 
+ep_tech = {}
 
+tech_results_list = []
 for h in soup.findAll('h3'):
     if "Episode" in h.text:
-        ep = [item for item in re.split("(?:\D)", h.text) if item][0]
+        # ep = [item for item in re.split("(?:\D)", h.text) if item][0]
         names = []
         place = []
         for item in h.find_next_siblings(limit=3)[2].findAll('th'):
             if "Technical" in item.text:
-                print(item.find_all_next(limit=7)[6])
+                result_tables = item.parent.parent.findAll('td')
+                ep_counter += 1
+        ep_list = list(range(1,ep_counter+1))
+        for t in result_tables:
+            if t.text in contestant_name_list:
+                names.append(t.text)
+                place.append([x for x in re.split("(\d?\d|N/A)",t.find_next_siblings(limit=2)[1].text) if x][0])
+                episode_placement = dict(zip(names,place))
+                episode_placement = {key:value for (key,value) in episode_placement.items() if value == 'N/A' or value.isnumeric()}
+        tech_results_list.append(episode_placement)
+
+ep_tech = dict(zip(ep_list,tech_results_list))
+ep_tech
+
+tech_results_list
+
             # if item.text in contestant_name_list:
             #     print(item.parent.find_previous_sibling())
+
+ep_counter = 0
+
+for h in soup.findAll('th'):
+    if "Technical" in h.text: 
+        ep_counter += 1
+        ep_list = list(range(1,ep_counter+1))
+        for t in h.find_next_sibling():
+            print(t)
+            # names = []
+            # place = []
+            # if t.text in contestant_name_list:
+            #     names.append(t.text)
+            #     place.append([x for x in re.split("(\d?\d|N/A)",t.find_next_siblings(limit=2)[1].text) if x][0])
+            #     episode_placement = dict(zip(names,place))
+            #     episode_placement = {key:value for (key,value) in episode_placement.items() if value == 'N/A' or value.isnumeric()}
+            #     tech_results_list.append(episode_placement)
+
+tech_results_list
+
+
+
+ 
