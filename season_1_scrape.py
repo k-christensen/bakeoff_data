@@ -174,7 +174,34 @@ for h in soup.findAll('h3'):
     if "Episode" in h.text:
         ep = [item for item in re.split("(?:\D)", h.text) if item][0]
         name_list = [item.text for item in h.find_next_siblings(limit=3)[2].findAll('td') if item.text in contestant_name_list]
-        place_list = [int(item.text[0]) for item in h.find_next_siblings(limit=3)[2].findAll('td') if item.text[0].isnumeric()]
+        place_list = [re.split("(?:\D)", item.text)[0] for item in h.find_next_siblings(limit=3)[2].findAll('td') if item.text[0].isnumeric()]
         cont_tech = dict(zip(name_list, place_list))
         episode_technical_dict.update({int(ep):cont_tech})
+episode_technical_dict
+
+
+example_dict = {}
+for h in soup.findAll('h3'):
+    if "Episode" in h.text:
+        ep = [item for item in re.split("(?:\D)", h.text) if item][0]
+        names = []
+        place = []
+        for item in h.find_next_siblings(limit=3)[2].findAll('td'):
+            if item.text in contestant_name_list:
+                names.append(item.text)
+                place.append([x for x in re.split("(\d?\d|N/A)",item.find_next_siblings(limit=2)[1].text) if x][0]) 
+            episode_placement = dict(zip(names,place))
+            episode_placement = {key:value for (key,value) in episode_placement.items() if value == 'N/A' or value.isnumeric()}
+        example_dict.update({int(ep):episode_placement})
+example_dict
+
+{item for item in  if item.values().isnumeric() or "N/A"}        
+
+
+
+example_dict[1].values()
+
+        print([item.text for item in h.find_next_siblings(limit=3)[2].findAll('td') if item.text in contestant_name_list])
+
+
 episode_technical_dict
