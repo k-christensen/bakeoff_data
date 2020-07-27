@@ -196,7 +196,6 @@ for h in soup.findAll('h3'):
 
 ep_tech.update(dict(zip(ep_list,tech_results_list)))
 
-
 tech_tuple = {}
 for k,v in ep_tech.items():
     for n,p in v.items():
