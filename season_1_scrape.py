@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import re
 import numpy as np
+from pprint import pprint
 
 url = 'https://en.wikipedia.org/wiki/The_Great_British_Bake_Off_(series_1)'
 
@@ -207,3 +208,16 @@ for item in name_and_ep:
     placement_list.append(tech_tuple[item])
 
 df['technical'] = placement_list
+
+
+pattern = re.compile(r"Episode_\d:")
+
+pprint(soup.find(text=pattern).__dict__)
+
+# for h in soup(text = ):
+#     print(h.parent)
+#     # if "Episode" in h.text:
+#     #     print(h.find_next_siblings(limit=3)[2])
+
+for h in soup(id = pattern):
+    print(h.find_all_next(limit=5)[4])
